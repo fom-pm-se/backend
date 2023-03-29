@@ -4,6 +4,10 @@ import fom.pmse.crms.backend.security.dto.AuthResponseDto;
 import fom.pmse.crms.backend.security.dto.SignUpRequestDto;
 import fom.pmse.crms.backend.security.model.User;
 import fom.pmse.crms.backend.security.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import io.swagger.v3.oas.annotations.media.Content;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +29,10 @@ public class AuthController {
     private final UserRepository userRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+    @Operation(summary = "Sign up a new user and performs serverside validation")
+    @ApiResponse(responseCode = "200", description = "User created successfully", content = @Content(schema = @Schema(implementation = AuthResponseDto.class)))
+    @ApiResponse(responseCode = "400", description = "Username already exists or password or username is too short. Message contains details", content = @Content(schema = @Schema(implementation = String.class, description = "Message contains details")))
+    public ResponseEntity<?> signUp(@Parameter @RequestBody SignUpRequestDto signUpRequestDto) {
         log.info("Received request to sign up user: {}", signUpRequestDto.getUsername());
         if (signUpRequestDto.getPassword().length() < 8) {
             log.info("Password is too short {}, username {}", signUpRequestDto.getPassword().length(), signUpRequestDto.getUsername());
