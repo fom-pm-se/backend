@@ -15,4 +15,4 @@ logging:
 
 backend:
   jwt:
-    secret: secretCodeNoOneShouldSee
+    secret: DYNe0zvY5hEQ2xhMDTPRoe_6BmAJ9UJNtbC-dCUs0ps

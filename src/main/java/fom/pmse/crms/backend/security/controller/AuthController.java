@@ -1,5 +1,6 @@
 package fom.pmse.crms.backend.security.controller;
 
+import fom.pmse.crms.backend.security.config.jwt.JwtTokenProvider;
 import fom.pmse.crms.backend.security.model.CrmUser;
 import fom.pmse.crms.backend.security.payload.request.LoginRequest;
 import fom.pmse.crms.backend.security.payload.request.SignUpRequest;
@@ -12,8 +13,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +34,8 @@ import java.time.LocalDateTime;
 public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
     @PostMapping("/signup")
     @Operation(summary = "Sign up a new user and performs serverside validation")
     @ApiResponse(responseCode = "200", description = "User created successfully", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
@@ -71,8 +78,23 @@ public class AuthController {
     @PostMapping(value = "/signin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Sign in a user and returns a JWT token")
     @ApiResponse(responseCode = "200", description = "User signed in successfully", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
-    @ApiResponse(responseCode = "401", description = "User is not authorized to access this resource", content = @Content(schema = @Schema(implementation = String.class, description = "Message contains details")))
+    @ApiResponse(responseCode = "401", description = "User is not authorized to access this resource", content = @Content(schema = @Schema(implementation = MessageResponse.class, description = "Message contains details")))
+    @ApiResponse(responseCode = "400", description = "Username or password is null", content = @Content(schema = @Schema(implementation = MessageResponse.class, description = "Message contains details")))
     public ResponseEntity<?> signIn(@RequestBody LoginRequest request) {
-        throw new UnsupportedOperationException("Not implemented yet: " + request.getUsername());
+        log.info("Received request to sign in user: {}", request.getUsername());
+        MessageResponse messageResponse = new MessageResponse();
+        if (request.getUsername() == null || request.getPassword() == null) {
+            log.info("Username or password is null");
+            messageResponse.setMessage("Username or password is null");
+            return ResponseEntity.badRequest().body(messageResponse);
+        }
+        if (userRepository.findByUsername(request.getUsername()).isEmpty()) {
+            log.info("User not found: {}", request.getUsername());
+            messageResponse.setMessage("User not found");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(messageResponse);
+        }
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        return ResponseEntity.ok(jwtTokenProvider.generateToken(authentication));
     }
 }
