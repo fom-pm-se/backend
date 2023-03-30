@@ -1,9 +1,9 @@
-package fom.pmse.crms.backend.security.dto;
+package fom.pmse.crms.backend.security.payload.request;
 
 import lombok.Data;
 
 @Data
-public class SignUpRequestDto {
+public class LoginRequest {
     private String username;
     private String password;
 }

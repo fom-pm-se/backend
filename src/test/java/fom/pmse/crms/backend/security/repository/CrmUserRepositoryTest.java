@@ -1,6 +1,6 @@
 package fom.pmse.crms.backend.security.repository;
 
-import fom.pmse.crms.backend.security.model.User;
+import fom.pmse.crms.backend.security.model.CrmUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,33 +13,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserRepositoryTest {
-    User user;
+class CrmUserRepositoryTest {
+    CrmUser crmUser;
     @Autowired
     UserRepository userRepository;
     @BeforeEach
     void setUp() {
-        user = new User();
-        user.setUsername("username");
-        user.setPassword("password");
-        userRepository.save(user);
+        crmUser = new CrmUser();
+        crmUser.setUsername("username");
+        crmUser.setPassword("password");
+        userRepository.save(crmUser);
     }
 
     @Test
     void findByUsernameReturnsUser() {
-        Optional<User> optionalUser = userRepository.findByUsername("username");
+        Optional<CrmUser> optionalUser = userRepository.findByUsername("username");
         assertTrue(optionalUser.isPresent());
     }
 
     @Test
     void findByUsernameReturnsEmpty() {
-        Optional<User> optionalUser = userRepository.findByUsername("username2");
+        Optional<CrmUser> optionalUser = userRepository.findByUsername("username2");
         assertFalse(optionalUser.isPresent());
     }
 
     @Test
     void findByUsernameReturnsCorrectUser() {
-        Optional<User> optionalUser = userRepository.findByUsername("username");
+        Optional<CrmUser> optionalUser = userRepository.findByUsername("username");
         assertTrue(optionalUser.isPresent());
         assertEquals("username", optionalUser.get().getUsername());
     }

@@ -8,51 +8,51 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserTest {
-    User user;
+class CrmUserTest {
+    CrmUser crmUser;
     LocalDateTime startedAt = LocalDateTime.now();
 
     @BeforeEach
     void setUp() {
-        user = new User();
-        user.setUsername("username");
-        user.setPassword("password");
-        user.setCreatedAt(startedAt);
-        user.setUpdatedAt(startedAt);
+        crmUser = new CrmUser();
+        crmUser.setUsername("username");
+        crmUser.setPassword("password");
+        crmUser.setCreatedAt(startedAt);
+        crmUser.setUpdatedAt(startedAt);
     }
 
     @Test
     void userIsInstanceOfUserDetails() {
-        assertInstanceOf(UserDetails.class, user);
+        assertInstanceOf(UserDetails.class, crmUser);
     }
 
     @Test
     void getPasswordReturnsCurrentPassword() {
-        assertEquals("password", user.getPassword());
+        assertEquals("password", crmUser.getPassword());
     }
 
     @Test
     void getUsernameReturnsCurrentUsername() {
-        assertEquals("username", user.getUsername());
+        assertEquals("username", crmUser.getUsername());
     }
 
     @Test
     void isAccountNonExpiredReturnsTrue() {
-        assertTrue(user.isAccountNonExpired());
+        assertTrue(crmUser.isAccountNonExpired());
     }
 
     @Test
     void isAccountNonLockedReturnsTrue() {
-        assertTrue(user.isAccountNonLocked());
+        assertTrue(crmUser.isAccountNonLocked());
     }
 
     @Test
     void isCredentialsNonExpiredReturnsTrue() {
-        assertTrue(user.isCredentialsNonExpired());
+        assertTrue(crmUser.isCredentialsNonExpired());
     }
 
     @Test
     void isEnabledReturnsTrue() {
-        assertTrue(user.isEnabled());
+        assertTrue(crmUser.isEnabled());
     }
 }

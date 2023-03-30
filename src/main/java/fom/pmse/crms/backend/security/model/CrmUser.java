@@ -14,29 +14,24 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class User implements UserDetails {
+public class CrmUser implements UserDetails {
 
     @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1, initialValue = 1000)
     @Id
     private Long id;
+
+    @Column(unique = true)
     private String username;
+
     private String password;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Set.of();
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
     }
 
     @Override

@@ -1,22 +1,24 @@
 package fom.pmse.crms.backend.security.controller;
 
-import fom.pmse.crms.backend.security.dto.AuthResponseDto;
-import fom.pmse.crms.backend.security.dto.SignUpRequestDto;
-import fom.pmse.crms.backend.security.model.User;
+import fom.pmse.crms.backend.security.model.CrmUser;
+import fom.pmse.crms.backend.security.payload.request.LoginRequest;
+import fom.pmse.crms.backend.security.payload.request.SignUpRequest;
+import fom.pmse.crms.backend.security.payload.response.MessageResponse;
 import fom.pmse.crms.backend.security.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import io.swagger.v3.oas.annotations.media.Content;
 
 import java.time.LocalDateTime;
 
@@ -27,12 +29,11 @@ import java.time.LocalDateTime;
 public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-
     @PostMapping("/signup")
     @Operation(summary = "Sign up a new user and performs serverside validation")
-    @ApiResponse(responseCode = "200", description = "User created successfully", content = @Content(schema = @Schema(implementation = AuthResponseDto.class)))
+    @ApiResponse(responseCode = "200", description = "User created successfully", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
     @ApiResponse(responseCode = "400", description = "Username already exists or password or username is too short. Message contains details", content = @Content(schema = @Schema(implementation = String.class, description = "Message contains details")))
-    public ResponseEntity<?> signUp(@Parameter @RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<?> signUp(@Parameter @RequestBody SignUpRequest signUpRequestDto) {
         log.info("Received request to sign up user: {}", signUpRequestDto.getUsername());
         if (signUpRequestDto.getPassword().length() < 8) {
             log.info("Password is too short {}, username {}", signUpRequestDto.getPassword().length(), signUpRequestDto.getUsername());
@@ -49,20 +50,29 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
         log.info("Creating user: {}", signUpRequestDto.getUsername());
-        User user = new User();
-        user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
+        CrmUser crmUser = new CrmUser();
+        crmUser.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
         log.info("Password encoded for user: {}", signUpRequestDto.getUsername());
-        log.info("Encoded password is {}", user.getPassword());
-        user.setUsername(signUpRequestDto.getUsername());
-        user.setCreatedAt(LocalDateTime.now());
-        log.info("Saving user: {} at time {}", signUpRequestDto.getUsername(), user.getCreatedAt());
-        userRepository.save(user);
+        log.info("Encoded password is {}", crmUser.getPassword());
+        crmUser.setUsername(signUpRequestDto.getUsername());
+        LocalDateTime creationTime = LocalDateTime.now();
+        crmUser.setCreatedAt(creationTime);
+        crmUser.setUpdatedAt(creationTime);
+        log.info("Saving user: {} at time {}", signUpRequestDto.getUsername(), crmUser.getCreatedAt());
+        userRepository.save(crmUser);
 
         log.info("User saved: {}", signUpRequestDto.getUsername());
-        AuthResponseDto authResponseDto = new AuthResponseDto();
-        authResponseDto.setUsername(user.getUsername());
-        authResponseDto.setData(user.getCreatedAt().toString());
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("User created successfully");
         log.info("User Created. Returning response for user: {}", signUpRequestDto.getUsername());
-        return ResponseEntity.ok().body(authResponseDto);
+        return ResponseEntity.ok().body(messageResponse);
+    }
+
+    @PostMapping(value = "/signin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Sign in a user and returns a JWT token")
+    @ApiResponse(responseCode = "200", description = "User signed in successfully", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+    @ApiResponse(responseCode = "401", description = "User is not authorized to access this resource", content = @Content(schema = @Schema(implementation = String.class, description = "Message contains details")))
+    public ResponseEntity<?> signIn(@RequestBody LoginRequest request) {
+        throw new UnsupportedOperationException("Not implemented yet: " + request.getUsername());
     }
 }
