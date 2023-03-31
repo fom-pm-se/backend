@@ -60,7 +60,6 @@ public class AuthController {
         CrmUser crmUser = new CrmUser();
         crmUser.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
         log.info("Password encoded for user: {}", signUpRequestDto.getUsername());
-        log.info("Encoded password is {}", crmUser.getPassword());
         crmUser.setUsername(signUpRequestDto.getUsername());
         LocalDateTime creationTime = LocalDateTime.now();
         crmUser.setCreatedAt(creationTime);
