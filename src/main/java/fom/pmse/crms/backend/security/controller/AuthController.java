@@ -64,7 +64,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
             ErrorDto errorDto = new ErrorDto("Benutzername oder Passwort ist falsch.");
-            return ResponseEntity.badRequest().body(errorDto);
+            return ResponseEntity.status(401).body(errorDto);
         }
     }
 }

@@ -45,7 +45,7 @@ class AuthControllerTest {
         signUpRequest.setFirstname("firstName");
         signUpRequest.setLastname("lastName");
 
-        url = "http://localhost:" + port + "/api/auth/signup";
+        url = "http://localhost:" + port + "/api/v1/auth/signup";
     }
 
     @AfterEach
