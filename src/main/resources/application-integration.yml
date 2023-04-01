@@ -8,11 +8,11 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
 logging:
   level:
     root: INFO
 
 backend:
   jwt:
-    secret: DYNe0zvY5hEQ2xhMDTPRoe_6BmAJ9UJNtbC-dCUs0ps
+    secret: VGhpc0lzTXlWZXJ5U2VjcmV0VGV4dHdoaWNod2lsbGJlZW5jb2RlZHNvb24h

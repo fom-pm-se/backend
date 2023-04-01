@@ -1,17 +1,14 @@
 package fom.pmse.crms.backend.security.payload.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoResponse {
-    private String username;
-    private String firstname;
-    private String lastname;
-    private Set<String> roles;
+public class AuthenticationResponse {
+    private String token;
 }

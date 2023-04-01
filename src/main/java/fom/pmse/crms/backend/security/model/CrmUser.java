@@ -1,37 +1,53 @@
 package fom.pmse.crms.backend.security.model;
 
+import fom.pmse.crms.backend.security.token.Token;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "users")
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CrmUser implements UserDetails {
 
     @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1, initialValue = 1000)
     @Id
+    @Column(name = "user_id")
     private Long id;
+
+    private String firstname;
+
+    private String lastname;
 
     @Column(unique = true)
     private String username;
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of();
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
