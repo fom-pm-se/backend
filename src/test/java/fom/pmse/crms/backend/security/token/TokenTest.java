@@ -3,13 +3,13 @@ package fom.pmse.crms.backend.security.token;
 import fom.pmse.crms.backend.security.model.CrmUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class TokenTest {
-    private Token token;
     CrmUser user;
+    private Token token;
 
     @BeforeEach
     void setUp() {
