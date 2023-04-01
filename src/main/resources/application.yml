@@ -1,0 +1,3 @@
+backend:
+  jwt:
+    secret: VGhpc0lzTXlWZXJ5U2VjcmV0VGV4dHdoaWNod2lsbGJlZW5jb2RlZHNvb24h
