@@ -12,8 +12,5 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode
 public class ErrorDto {
-    HttpStatus status;
-    String message;
-    String details;
-    LocalDateTime timestamp;
+    String errorMessage;
 }
