@@ -14,9 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +22,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 public class AuthController {
     private final AuthenticationService authenticationService;
+
+    @GetMapping("/exists")
+    @Operation(summary = "Check if a user exists", description = "Check if a user exists")
+    @ApiResponse(responseCode = "200", description = "The user exists", content = @Content(schema = @Schema(implementation = Boolean.class)))
+    @ApiResponse(responseCode = "400", description = "The user does not exist", content = @Content(schema = @Schema(implementation = Boolean.class)))
+    public ResponseEntity<Boolean> exists(
+            @RequestParam String username
+    ) {
+        if (username == null || username.isBlank()) {
+            return ResponseEntity.badRequest().body(false);
+        }
+        return ResponseEntity.ok(authenticationService.isUsernameAvailable(username));
+    }
 
     @PostMapping("/signup")
     @Operation(summary = "Register a new user in the system", description = "Register a new user in the system. The user will be assigned the role USER. The password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number.")
