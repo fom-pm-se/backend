@@ -1,7 +1,9 @@
 package fom.pmse.crms.backend.security.config;
 
 import fom.pmse.crms.backend.security.filter.JwtAuthenticationFilter;
+import fom.pmse.crms.backend.security.properties.CorsProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,15 +21,19 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final CorsProperties corsProperties;
 
     @Bean
     public CorsConfigurationSource configuration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        List<String> allowedOrigins = corsProperties.getAllowedOrigins();
+        corsConfiguration.setAllowedOrigins(allowedOrigins);
+        log.info("Allowed origins: {}", allowedOrigins);
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
