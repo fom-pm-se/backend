@@ -38,11 +38,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String username;
 
         if (header == null || !header.startsWith("Bearer ")) {
-            log.info("No valid token found in request...");
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("Token found in request. Validating token.");
         token = header.substring(7);
         username = jwtService.extractUsername(token);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
