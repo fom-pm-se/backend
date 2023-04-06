@@ -1,3 +1,5 @@
 backend:
   jwt:
     secret: VGhpc0lzTXlWZXJ5U2VjcmV0VGV4dHdoaWNod2lsbGJlZW5jb2RlZHNvb24h
+  cors:
+    allowed-origins: http://127.0.0.1:3000,http://localhost:3000

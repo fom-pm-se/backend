@@ -43,7 +43,6 @@ public class AuthenticationService {
     }
 
     public boolean isUsernameAvailable(String username) {
-        log.info("Searching for user: {}", username);
         return userRepository.findByUsername(username).isEmpty();
     }
 
