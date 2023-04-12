@@ -35,6 +35,7 @@ public class AuthenticationService {
                 .lastname(signUpRequest.getLastname())
                 .username(signUpRequest.getUsername())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .isEnabled(true)
                 .createdAt(creationTimeStamp)
                 .updatedAt(creationTimeStamp)
                 .role(Role.USER)

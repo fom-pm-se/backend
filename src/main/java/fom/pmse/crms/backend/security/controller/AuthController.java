@@ -12,8 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -73,7 +73,11 @@ public class AuthController {
             response = authenticationService.authenticate(request);
             log.info("Authentication Successful");
             return ResponseEntity.ok(response);
+        } catch (LockedException ex) {
+            ErrorDto errorDto = new ErrorDto("Der Account ist gesperrt.");
+            return ResponseEntity.status(401).body(errorDto);
         } catch (Exception ex) {
+            log.error("Authentication failed", ex);
             ErrorDto errorDto = new ErrorDto("Benutzername oder Passwort ist falsch.");
             return ResponseEntity.status(401).body(errorDto);
         }

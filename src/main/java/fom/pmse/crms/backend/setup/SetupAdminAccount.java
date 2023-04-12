@@ -39,6 +39,7 @@ public class SetupAdminAccount {
             admin.setUsername(adminUsername);
             admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.setRole(Role.ADMIN);
+            admin.setEnabled(true);
             admin.setCreatedAt(created);
             admin.setUpdatedAt(created);
             log.info("Admin Account '{}' was created at '{}'", adminUsername, created.format(DateTimeFormatter.ISO_ORDINAL_DATE));

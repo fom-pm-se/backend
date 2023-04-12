@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -32,5 +33,21 @@ public class UserService {
                     .build());
         }
         return userDtos;
+    }
+
+    public CrmUser lockUser(String username) {
+        log.info("Locking user {}", username);
+        Optional<CrmUser> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            CrmUser crmUser = user.get();
+            boolean newValue = !crmUser.isEnabled();
+            log.info("Setting enabled to {}", newValue);
+            crmUser.setEnabled(newValue);
+            userRepository.save(crmUser);
+            return crmUser;
+        } else {
+            log.warn("User {} not found", username);
+            return null;
+        }
     }
 }
