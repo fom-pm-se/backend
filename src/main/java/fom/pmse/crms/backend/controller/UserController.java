@@ -4,6 +4,8 @@ import fom.pmse.crms.backend.converter.CrmUserConverter;
 import fom.pmse.crms.backend.payload.response.CrmUserDto;
 import fom.pmse.crms.backend.security.model.CrmUser;
 import fom.pmse.crms.backend.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,8 @@ public class UserController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Returns list of all users")
+    @ApiResponse(responseCode = "200", description = "List of users")
     public ResponseEntity<List<CrmUserDto>> getAllUsers() {
         log.info("Received request to get all users");
         List<CrmUserDto> crmUserDtos = userService.getAllUsers();
@@ -34,6 +38,9 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(summary = "Locks a user. Unlocks if already locked. Returns the updated user.")
+    @ApiResponse(responseCode = "200", description = "User locked/unlocked")
+    @ApiResponse(responseCode = "400", description = "Username is empty or user not found")
     public ResponseEntity<?> lockUser(@RequestParam String username) {
         if (username == null || username.isEmpty()) {
             log.warn("Username is empty");
