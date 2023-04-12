@@ -16,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -27,11 +29,14 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(SignUpRequest signUpRequest) {
+        LocalDateTime creationTimeStamp = LocalDateTime.now();
         CrmUser user = CrmUser.builder()
                 .firstname(signUpRequest.getFirstname())
                 .lastname(signUpRequest.getLastname())
                 .username(signUpRequest.getUsername())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .createdAt(creationTimeStamp)
+                .updatedAt(creationTimeStamp)
                 .role(Role.USER)
                 .build();
         CrmUser created = userRepository.save(user);
