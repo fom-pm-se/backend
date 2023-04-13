@@ -45,6 +45,8 @@ public class CrmUser implements UserDetails {
 
     private LocalDateTime updatedAt;
 
+    private boolean isEnabled;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -56,17 +58,15 @@ public class CrmUser implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return isEnabled; }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return updatedAt.isAfter(LocalDateTime.now().minusMonths(1));
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isEnabled;
     }
 }

@@ -43,7 +43,7 @@ class CrmUserTest {
 
     @Test
     void isAccountNonLockedReturnsTrue() {
-        assertTrue(crmUser.isAccountNonLocked());
+        assertFalse(crmUser.isAccountNonLocked());
     }
 
     @Test
@@ -53,6 +53,6 @@ class CrmUserTest {
 
     @Test
     void isEnabledReturnsTrue() {
-        assertTrue(crmUser.isEnabled());
+        assertFalse(crmUser.isEnabled());
     }
 }
