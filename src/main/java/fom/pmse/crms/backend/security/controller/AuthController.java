@@ -57,7 +57,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
             log.error("Registration failed for user {}:", signUpRequestDto.getUsername(), ex);
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorDto("Registrierung fehlgeschlagen"));
         }
     }
 

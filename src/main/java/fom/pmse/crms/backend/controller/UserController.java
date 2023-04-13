@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,20 @@ import java.util.List;
 @Slf4j
 public class UserController {
     private final UserService userService;
+
+    @GetMapping("/me")
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
+    public ResponseEntity<CrmUserDto> getMe(Authentication authentication) {
+        log.info("Received request to get current user");
+        String username = authentication.getName();
+        CrmUserDto crmUserDto = userService.getUserByName(username);
+        if (crmUserDto == null) {
+            log.warn("User {} not found", username);
+            return ResponseEntity.notFound().build();
+        }
+        log.info("Fetched user {}", crmUserDto.getUsername());
+        return ResponseEntity.ok(crmUserDto);
+    }
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
