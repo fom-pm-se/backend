@@ -5,6 +5,7 @@ import fom.pmse.crms.backend.security.payload.request.LoginRequest;
 import fom.pmse.crms.backend.security.payload.request.SignUpRequest;
 import fom.pmse.crms.backend.security.payload.response.AuthenticationResponse;
 import fom.pmse.crms.backend.security.service.AuthenticationService;
+import fom.pmse.crms.backend.service.SettingsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthController {
     private final AuthenticationService authenticationService;
+    private final SettingsService settingsService;
 
     @GetMapping("/exists")
     @Operation(summary = "Check if a user exists", description = "Check if a user exists")
@@ -44,6 +48,14 @@ public class AuthController {
             @RequestBody SignUpRequest signUpRequestDto
     ) {
         try {
+            if (!settingsService.isSettingEnabled("all_reg")) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth.getAuthorities().stream().noneMatch(ga -> ga.getAuthority().equals("ADMIN"))) {
+                    ErrorDto errorDto = new ErrorDto("Die Registrierung ist deaktiviert.");
+                    return ResponseEntity.badRequest().body(errorDto);
+                }
+            }
+
             if (!authenticationService.isUsernameAvailable(signUpRequestDto.getUsername())) {
                 ErrorDto errorDto = new ErrorDto("Der Benutzername ist bereits vergeben.");
                 return ResponseEntity.badRequest().body(errorDto);
