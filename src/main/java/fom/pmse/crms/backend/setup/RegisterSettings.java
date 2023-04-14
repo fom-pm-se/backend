@@ -14,7 +14,7 @@ public class RegisterSettings {
 
     @PostConstruct
     public void registerSettings() {
-        settingsService.registerSetting("Benutzerregistrierung", "Erlaubt es Benutzern sich selbst zu registrieren", "all_reg", false);
+        settingsService.registerSetting("Benutzerregistrierung", "Erlaubt es Benutzern sich selbst zu registrieren", "all_reg", true);
         settingsService.registerSetting("Benutzerlöschung", "Erlaubt es Benutzern sich selbst zu löschen", "all_del", true);
         settingsService.registerSetting("Benutzeränderung", "Erlaubt es Benutzern ihre Daten zu ändern", "all_usr_chng", true);
         settingsService.registerSetting("Passwort ändern", "Erlaubt es Benutzern ihr Passwort zu ändern", "all_usr_chng_psswd", true);
