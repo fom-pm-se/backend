@@ -1,3 +1,9 @@
+# Repository Status
+
+![Integration](https://github.com/fom-pm-se/backend/actions/workflows/integration.yml/badge.svg)
+
+![Delivery](https://github.com/fom-pm-se/backend/actions/workflows/deployment.yml/badge.svg)
+
 # Getting Started
 
 ### Reference Documentation

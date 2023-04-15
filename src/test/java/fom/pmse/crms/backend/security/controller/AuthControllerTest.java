@@ -1,8 +1,9 @@
 package fom.pmse.crms.backend.security.controller;
 
 import fom.pmse.crms.backend.dto.ErrorDto;
+import fom.pmse.crms.backend.model.Setting;
+import fom.pmse.crms.backend.repository.SettingsRepository;
 import fom.pmse.crms.backend.security.model.CrmUser;
-import fom.pmse.crms.backend.security.payload.request.LoginRequest;
 import fom.pmse.crms.backend.security.payload.request.SignUpRequest;
 import fom.pmse.crms.backend.security.repository.UserRepository;
 import fom.pmse.crms.backend.security.token.TokenRepository;
@@ -17,14 +18,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AuthControllerTest {
 
-    private SignUpRequest signUpRequest;
     String url;
-
+    private SignUpRequest signUpRequest;
     @Value("${local.server.port}")
     private int port;
 
@@ -37,6 +38,9 @@ class AuthControllerTest {
     @Autowired
     private TokenRepository tokenRepository;
 
+    @Autowired
+    private SettingsRepository settingsRepository;
+
     @BeforeEach
     void setUp() {
         signUpRequest = new SignUpRequest();
@@ -46,6 +50,7 @@ class AuthControllerTest {
         signUpRequest.setLastname("lastName");
 
         url = "http://localhost:" + port + "/api/v1/auth/signup";
+
     }
 
     @AfterEach
@@ -113,5 +118,28 @@ class AuthControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         CrmUser user = userRepository.findByUsername(signUpRequest.getUsername()).orElse(null);
         assertNotNull(user);
+    }
+
+    @Test
+    void signUpRejectedIfRegistrationByUserIsDisabled() {
+        Setting setting = new Setting();
+        setting.setActive(false);
+        setting.setDescription("all_reg");
+        setting.setTechnicalName("all_reg");
+        setting.setName("all_reg");
+        settingsRepository.deleteAll();
+        settingsRepository.save(setting);
+
+        CrmUser user = new CrmUser();
+        user.setUsername(signUpRequest.getUsername());
+        user.setPassword(signUpRequest.getPassword());
+        user.setFirstname(signUpRequest.getFirstname());
+        user.setLastname(signUpRequest.getLastname());
+        userRepository.save(user);
+        ResponseEntity<ErrorDto> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(signUpRequest), ErrorDto.class);
+        String message = "Die Registrierung ist deaktiviert.";
+        assertEquals(message, response.getBody().getErrorMessage());
+        setting.setActive(true);
+        settingsRepository.save(setting);
     }
 }
