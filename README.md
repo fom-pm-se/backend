@@ -24,8 +24,10 @@ Die Datenbank kann z.B. mit Docker über folgenden Befehl zur Verfügung gestell
 `docker run -d --p 5432:5432 --name postgres -e POSTGRES_PASSWORD=postgres postgres:latest`
 
 Anschließend kann die Anwendung mit dem Spring-Profil `integration` gestartet werden:
-`mvn spring-boot:run -Dspring-boot.run.profiles=integration`
 
+`mvn spring-boot:run -Dspring-boot.run.profiles=integration`
+ggf. 
+`mvn spring-boot:run -D"spring-boot.run.profiles"=integration`
 
 ### Starten der Anwendung im Produktionsmodus
 
