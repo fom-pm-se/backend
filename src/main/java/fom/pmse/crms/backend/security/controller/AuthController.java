@@ -94,4 +94,20 @@ public class AuthController {
             return ResponseEntity.status(401).body(errorDto);
         }
     }
+
+    @PostMapping(value = "/logout")
+    @Operation(summary = "Logout a user", description = "Logout a user")
+    @ApiResponse(responseCode = "200", description = "The user was successfully logged out", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class)))
+    @ApiResponse(responseCode = "400", description = "The user could not be logged out. Response contains details", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    public ResponseEntity<?> logout(Authentication authentication) {
+        try {
+            authenticationService.logout(authentication.getName());
+            log.info("Logout for user {} was successful", authentication.getName());
+            return ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            log.error("Logout failed", ex);
+            ErrorDto errorDto = new ErrorDto("Logout fehlgeschlagen");
+            return ResponseEntity.status(401).body(errorDto);
+        }
+    }
 }
