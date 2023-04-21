@@ -1,23 +1,28 @@
 package fom.pmse.crms.backend.controller;
 
 import fom.pmse.crms.backend.converter.CrmUserConverter;
+import fom.pmse.crms.backend.dto.ErrorDto;
+import fom.pmse.crms.backend.payload.request.ChangeUserDto;
+import fom.pmse.crms.backend.payload.request.ResetPasswordDto;
 import fom.pmse.crms.backend.payload.response.CrmUserDto;
 import fom.pmse.crms.backend.security.model.CrmUser;
+import fom.pmse.crms.backend.security.model.Role;
 import fom.pmse.crms.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,15 +32,10 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     public ResponseEntity<CrmUserDto> getMe(Authentication authentication) {
         log.info("Received request to get current user");
         String username = authentication.getName();
         CrmUserDto crmUserDto = userService.getUserByName(username);
-        if (crmUserDto == null) {
-            log.warn("User {} not found", username);
-            return ResponseEntity.notFound().build();
-        }
         log.info("Fetched user {}", crmUserDto.getUsername());
         return ResponseEntity.ok(crmUserDto);
     }
@@ -51,21 +51,47 @@ public class UserController {
         return ResponseEntity.ok(crmUserDtos);
     }
 
-    @PostMapping
+    @PostMapping("/lock")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Locks a user. Unlocks if already locked. Returns the updated user.")
     @ApiResponse(responseCode = "200", description = "User locked/unlocked")
     @ApiResponse(responseCode = "400", description = "Username is empty or user not found")
-    public ResponseEntity<?> lockUser(@RequestParam String username) {
-        if (username == null || username.isEmpty()) {
-            log.warn("Username is empty");
-            return ResponseEntity.badRequest().body("Username is empty");
-        }
+    public ResponseEntity<?> lockUser(@NonNull @RequestParam String username) {
         CrmUser user = userService.lockUser(username);
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
+        return ResponseEntity.ok().body(CrmUserConverter.toDto(user));
+    }
+
+    @PostMapping("/lock/me")
+    @Operation(summary = "Locks the current user")
+    @ApiResponse(responseCode = "200", description = "User locked")
+    @ApiResponse(responseCode = "400", description = "Username is empty or user not found")
+    public ResponseEntity<?> lockCurrentUser(Authentication authentication) {
+        CrmUser user = userService.lockUser(authentication.getName(), false);
         CrmUserDto crmUserDto = CrmUserConverter.toDto(user);
         return ResponseEntity.ok().body(crmUserDto);
+    }
+
+    @PostMapping("/change-password")
+    @Operation(summary = "Changes the password of the current user")
+    @ApiResponse(responseCode = "200", description = "Password changed")
+    @ApiResponse(responseCode = "401", description = "New password is not valid", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    @ApiResponse(responseCode = "403", description = "Old Password is not valid", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        return userService.changePassword(resetPasswordDto);
+    }
+
+    @PutMapping("/change")
+    @Operation(summary = "Changes the user", description = "Only the fields that are not null will be changed")
+    @ApiResponse(responseCode = "200", description = "User changed", content = @Content(schema = @Schema(implementation = CrmUserDto.class)))
+    @ApiResponse(responseCode = "404", description = "Username is empty or user not found")
+    public ResponseEntity<?> changeUser(@RequestBody ChangeUserDto changeUserDto, Authentication authentication) {
+        var isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(Role.ADMIN.name()));
+        log.info("Received request to change user {}", changeUserDto.getUsername());
+        if (!isAdmin && !Objects.equals(changeUserDto.getUsername(), authentication.getName())) {
+            log.info("User {} tried to change user {}", authentication.getName(), changeUserDto.getUsername());
+            changeUserDto.setUsername(authentication.getName());
+        }
+        return userService.changeUser(changeUserDto);
     }
 }

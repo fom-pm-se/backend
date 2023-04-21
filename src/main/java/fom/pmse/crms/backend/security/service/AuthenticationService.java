@@ -87,7 +87,7 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(CrmUser crmUser) {
+    public void revokeAllUserTokens(CrmUser crmUser) {
         log.info("Revoking Tokens for user: {}", crmUser.getUsername());
         var validUserTokens = tokenRepository.findAllValidTokenByUser(crmUser.getId());
         if (validUserTokens.isEmpty()) return;
@@ -98,5 +98,9 @@ public class AuthenticationService {
                 }
         );
         tokenRepository.saveAll(validUserTokens);
+    }
+
+    public void logout(String username) {
+        userRepository.findByUsername(username).ifPresent(this::revokeAllUserTokens);
     }
 }
