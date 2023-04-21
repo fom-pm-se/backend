@@ -15,9 +15,9 @@ public class RegisterSettings {
     @PostConstruct
     public void registerSettings() {
         settingsService.registerSetting("Benutzerregistrierung", "Erlaubt es Benutzern sich selbst zu registrieren", "all_reg", true);
+        settingsService.registerSetting("Benutzereinstellungen", "Erlaubt Einstellungen an ihrem Benutzerkonto vorzunehmen", "all_user_settings", true);
         settingsService.registerSetting("Benutzerlöschung", "Erlaubt es Benutzern sich selbst zu löschen", "all_del", true);
-        settingsService.registerSetting("Benutzeränderung", "Erlaubt es Benutzern ihre Daten zu ändern", "all_usr_chng", true);
-        settingsService.registerSetting("Passwort ändern", "Erlaubt es Benutzern ihr Passwort zu ändern", "all_usr_chng_psswd", true);
-        settingsService.registerSetting("Automatischer Login nach registrierung", "Benutzer werden nach der Registrierung automatisch eingeloggt", "all_auto_forwd", true);
+        settingsService.registerSetting("Benutzerliste", "Erlaubt es Benutzern die Benutzerliste einzusehen", "all_user_list", true);
+        settingsService.registerSetting("Benutzerliste", "Erlaubt es Benutzern die Benutzerliste einzusehen", "all_user_list", true);
     }
 }

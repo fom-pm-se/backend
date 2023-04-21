@@ -1,5 +1,6 @@
 package fom.pmse.crms.backend.service;
 
+import fom.pmse.crms.backend.exception.BadRequestException;
 import fom.pmse.crms.backend.model.Setting;
 import fom.pmse.crms.backend.payload.response.SettingDto;
 import fom.pmse.crms.backend.payload.response.SettingsShortDto;
@@ -18,23 +19,17 @@ public class SettingsService {
     private final SettingsRepository settingsRepository;
 
     public Boolean isSettingEnabled(String technicalName) {
-        Setting setting = settingsRepository.findByTechnicalName(technicalName).orElse(null);
-        if (setting == null) {
-            log.error("Setting with technical name {} not found", technicalName);
-            return null;
-        }
+        Setting setting = settingsRepository.findByTechnicalName(technicalName).orElseThrow(() -> new BadRequestException("Die Einstellung mit dem technischen Namen " + technicalName + " wurde nicht gefunden"));
+        log.info("Request for Setting {} -> {}", technicalName, setting.isActive());
         return setting.isActive();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     public Boolean setSetting(String technicalName, boolean active) {
-        Setting setting = settingsRepository.findByTechnicalName(technicalName).orElse(null);
-        if (setting == null) {
-            log.error("Setting with id {} not found", technicalName);
-            return null;
-        }
+        Setting setting = settingsRepository.findByTechnicalName(technicalName).orElseThrow(() -> new BadRequestException("Die Einstellung mit dem technischen Namen " + technicalName + " wurde nicht gefunden"));
         setting.setActive(active);
         settingsRepository.save(setting);
+        log.info("Setting {} is now {}", technicalName, setting.isActive());
         return setting.isActive();
     }
 
