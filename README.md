@@ -25,10 +25,11 @@ Die Datenbank kann z.B. mit Docker über folgenden Befehl zur Verfügung gestell
 
 Anschließend kann die Anwendung mit dem Spring-Profil `integration` gestartet werden:
 
-`mvn spring-boot:run -Dspring-boot.run.profiles=integration`
-ggf. 
-`mvn spring-boot:run -D"spring-boot.run.profiles"=integration`
+# Bash
+mvn spring-boot:run -Dspring-boot.run.profiles=integration
+
+# Powershell
+mvn spring-boot:run -D"spring-boot.run.profiles"=integration
 
 ### Starten der Anwendung im Produktionsmodus
-
 tbd
