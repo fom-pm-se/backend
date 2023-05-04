@@ -112,4 +112,12 @@ public class UserService {
         log.info("User {} changed successfully", changeUserDto.getUsername());
         return ResponseEntity.ok(CrmUserConverter.toDto(crmUser));
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void deleteUser(String username) {
+        log.info("Deleting user {}", username);
+        CrmUser crmUser = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Benutzer konnte nicht gefunden werden " + username));
+        userRepository.delete(crmUser);
+        log.info("User {} deleted successfully", username);
+    }
 }
