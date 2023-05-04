@@ -36,4 +36,9 @@ public class PartnerController {
     public ResponseEntity<PartnerDto> createPartner(@RequestBody CreatePartnerDto partnerDto) {
         return ResponseEntity.ok(partnerService.createPartner(partnerDto));
     }
+
+    @GetMapping(value = "/types")
+    public ResponseEntity<List<String>> getAllPartnerTypes() {
+        return ResponseEntity.ok(partnerService.getAllPartnerTypes());
+    }
 }

@@ -1,11 +1,13 @@
 package fom.pmse.crms.backend.service;
 
+import fom.pmse.crms.backend.model.PartnerType;
 import fom.pmse.crms.backend.payload.request.CreatePartnerDto;
 import fom.pmse.crms.backend.payload.response.PartnerDto;
 import fom.pmse.crms.backend.repository.PartnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,6 +42,12 @@ public class PartnerService {
         return partnerRepository.findAll().stream()
                 .map(PartnerDto::fromPartner)
                 .toList();
+    }
+
+    public List<String> getAllPartnerTypes() {
+        List<String> types = new ArrayList<String>();
+        PartnerType.getTypes().forEach(type -> types.add(type.toString()));
+        return types;
     }
 
 }
