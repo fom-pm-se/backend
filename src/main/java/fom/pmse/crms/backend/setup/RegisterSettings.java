@@ -16,8 +16,5 @@ public class RegisterSettings {
     public void registerSettings() {
         settingsService.registerSetting("Benutzerregistrierung", "Erlaubt es Benutzern sich selbst zu registrieren", "all_reg", true);
         settingsService.registerSetting("Benutzereinstellungen", "Erlaubt Einstellungen an ihrem Benutzerkonto vorzunehmen", "all_user_settings", true);
-        settingsService.registerSetting("Benutzerlöschung", "Erlaubt es Benutzern sich selbst zu löschen", "all_del", true);
-        settingsService.registerSetting("Benutzerliste", "Erlaubt es Benutzern die Benutzerliste einzusehen", "all_user_list", true);
-        settingsService.registerSetting("Benutzerliste", "Erlaubt es Benutzern die Benutzerliste einzusehen", "all_user_list", true);
     }
 }

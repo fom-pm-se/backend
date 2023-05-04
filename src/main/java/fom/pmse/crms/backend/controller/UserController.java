@@ -94,4 +94,15 @@ public class UserController {
         }
         return userService.changeUser(changeUserDto);
     }
+
+    @DeleteMapping("/delete")
+    @Operation(summary = "Deletes the user")
+    @ApiResponse(responseCode = "200", description = "User deleted")
+    @ApiResponse(responseCode = "404", description = "Username is empty or user not found")
+    public ResponseEntity<?> deleteUser(@NonNull @RequestParam String username) {
+        log.info("Received request to delete user {}", username);
+        userService.deleteUser(username);
+        log.info("Deleted user {}", username);
+        return ResponseEntity.ok().build();
+    }
 }

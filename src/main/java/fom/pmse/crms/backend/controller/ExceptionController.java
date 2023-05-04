@@ -15,4 +15,9 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     protected ResponseEntity<ErrorDto> handleException(Exception ex) {
         return ResponseEntity.badRequest().body(new ErrorDto(ex.getMessage()));
     }
+
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    protected ResponseEntity<ErrorDto> handleIllegalArgumentException(Exception ex) {
+        return ResponseEntity.badRequest().body(new ErrorDto(ex.getMessage()));
+    }
 }
