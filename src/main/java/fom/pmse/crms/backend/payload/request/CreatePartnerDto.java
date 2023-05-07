@@ -2,6 +2,7 @@ package fom.pmse.crms.backend.payload.request;
 
 import fom.pmse.crms.backend.model.Partner;
 import fom.pmse.crms.backend.model.PartnerType;
+import fom.pmse.crms.backend.util.PartnerEnumMapper;
 import lombok.*;
 
 @Data
@@ -14,14 +15,14 @@ public class CreatePartnerDto {
     private String address;
     private String name;
     private String phoneNumber;
-    private PartnerType type;
+    private String type;
 
     public Partner toPartner() {
         return Partner.builder()
                 .address(address)
                 .name(name)
                 .phoneNumber(phoneNumber)
-                .type(type)
+                .type(PartnerEnumMapper.map(type))
                 .build();
     }
 }

@@ -30,7 +30,7 @@ public class Partner extends Auditable {
         this.name = dto.getName();
         this.address = dto.getAddress();
         this.phoneNumber = dto.getPhoneNumber();
-        this.type = dto.getType();
+        this.type = PartnerType.valueOf(dto.getType());
         return this;
     }
 
