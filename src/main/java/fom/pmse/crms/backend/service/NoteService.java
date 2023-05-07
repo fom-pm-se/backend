@@ -60,4 +60,9 @@ public class NoteService {
         notes.forEach(note -> noteDtos.add(NoteDto.fromNote(note)));
         return noteDtos;
     }
+
+    public void deleteNoteById(Long id) {
+        log.info("Deleting Note with ID {}", id);
+        noteRepository.deleteById(id);
+    }
 }

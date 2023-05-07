@@ -41,4 +41,13 @@ public class NoteController {
     public ResponseEntity<NoteDto> updateNote(@RequestBody UpdateNoteDto noteDto) {
         return ResponseEntity.ok(noteService.updateNote(noteDto));
     }
+
+    @DeleteMapping("/{noteId}")
+    @Operation(summary = "Delete a note")
+    @ApiResponse(responseCode = "200", description = "Note deleted")
+    @ApiResponse(responseCode = "400", description = "Note not found")
+    public ResponseEntity<Void> deleteNoteById(@PathVariable Long noteId) {
+        noteService.deleteNoteById(noteId);
+        return ResponseEntity.ok().build();
+    }
 }
