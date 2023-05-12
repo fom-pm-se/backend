@@ -14,6 +14,7 @@ public class RegisterSettings {
 
     @PostConstruct
     public void registerSettings() {
+        log.info("Setting up settings on initial application start");
         settingsService.registerSetting("Benutzerregistrierung", "Erlaubt es Benutzern sich selbst zu registrieren", "all_reg", true);
         settingsService.registerSetting("Benutzereinstellungen", "Erlaubt Einstellungen an ihrem Benutzerkonto vorzunehmen", "all_user_settings", true);
     }

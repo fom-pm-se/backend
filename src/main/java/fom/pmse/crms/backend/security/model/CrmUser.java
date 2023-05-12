@@ -3,6 +3,9 @@ package fom.pmse.crms.backend.security.model;
 import fom.pmse.crms.backend.security.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,6 +42,7 @@ public class CrmUser implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
+    @Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     private List<Token> tokens;
 
     private LocalDateTime createdAt;
