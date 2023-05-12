@@ -1,6 +1,7 @@
 package fom.pmse.crms.backend.model;
 
 import fom.pmse.crms.backend.payload.request.CreatePartnerDto;
+import fom.pmse.crms.backend.security.model.CrmUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,9 @@ public class Partner extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private PartnerType type;
+
+    @OneToOne
+    private CrmUser keyAccount;
 
     public Partner fromDto(CreatePartnerDto dto) {
         this.name = dto.getName();
