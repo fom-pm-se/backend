@@ -2,9 +2,8 @@ package fom.pmse.crms.backend.payload.response;
 
 import fom.pmse.crms.backend.model.Partner;
 import fom.pmse.crms.backend.model.PartnerType;
+import fom.pmse.crms.backend.util.CrmTimeHelper;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -12,16 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PartnerDto {
+public class PartnerDto extends AuditableDto {
     private Long id;
     private String address;
     private String name;
     private String phoneNumber;
-    private PartnerType type;
-    private String createdByUsername;
-    private String updatedByUsername;
-    private LocalDateTime creationTime;
-    private LocalDateTime updateTime;
+    private String type;
 
     public static PartnerDto fromPartner(Partner partner) {
         PartnerDto partnerDto = new PartnerDto();
@@ -29,11 +24,11 @@ public class PartnerDto {
         partnerDto.setAddress(partner.getAddress());
         partnerDto.setName(partner.getName());
         partnerDto.setPhoneNumber(partner.getPhoneNumber());
-        partnerDto.setType(partner.getType());
+        partnerDto.setType(partner.getType().name);
         partnerDto.setCreatedByUsername(partner.getCreatedBy());
         partnerDto.setUpdatedByUsername(partner.getUpdatedByUser());
-        partnerDto.setCreationTime(partner.getCreationTime());
-        partnerDto.setUpdateTime(partner.getUpdateTime());
+        partnerDto.setCreationTime(CrmTimeHelper.format(partner.getCreationTime()));
+        partnerDto.setUpdateTime(CrmTimeHelper.format(partner.getUpdateTime()));
         return partnerDto;
     }
 }
