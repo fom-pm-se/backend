@@ -9,6 +9,7 @@ import fom.pmse.crms.backend.security.repository.UserRepository;
 import fom.pmse.crms.backend.security.token.Token;
 import fom.pmse.crms.backend.security.token.TokenRepository;
 import fom.pmse.crms.backend.security.token.TokenType;
+import fom.pmse.crms.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JsonWebTokenService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final NotificationService notificationService;
 
     public AuthenticationResponse register(SignUpRequest signUpRequest) {
         LocalDateTime creationTimeStamp = LocalDateTime.now();
@@ -41,6 +43,7 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
         CrmUser created = userRepository.save(user);
+        notificationService.createNotification(created.getUsername(), "Willkommen bei der PMSE-CRMS", "Dein Benutzer wurde erfolgreich registriert. Schau dich gerne um!", "/settings");
         String jwtToken = jwtService.generateToken(user);
         saveUserToken(created, jwtToken);
         return AuthenticationResponse.builder()

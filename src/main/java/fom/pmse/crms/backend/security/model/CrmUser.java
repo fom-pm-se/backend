@@ -1,9 +1,9 @@
 package fom.pmse.crms.backend.security.model;
 
+import fom.pmse.crms.backend.model.Notification;
 import fom.pmse.crms.backend.security.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,9 +39,11 @@ public class CrmUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Token> tokens;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Notification> notifications;
 
     private LocalDateTime createdAt;
 
@@ -60,7 +62,9 @@ public class CrmUser implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonLocked() { return isEnabled; }
+    public boolean isAccountNonLocked() {
+        return isEnabled;
+    }
 
     @Override
     public boolean isCredentialsNonExpired() {
