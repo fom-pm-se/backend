@@ -1,7 +1,6 @@
 package fom.pmse.crms.backend.payload.response;
 
 import fom.pmse.crms.backend.model.Note;
-import fom.pmse.crms.backend.util.CrmTimeHelper;
 import lombok.*;
 
 @NoArgsConstructor
@@ -23,8 +22,8 @@ public class NoteDto extends AuditableDto {
         noteDto.setPartnerId(note.getPartner().getId());
         noteDto.setCreatedByUsername(note.getCreatedBy());
         noteDto.setUpdatedByUsername(note.getUpdatedByUser());
-        noteDto.setCreationTime(CrmTimeHelper.format(note.getCreationTime()));
-        noteDto.setUpdateTime(CrmTimeHelper.format(note.getUpdateTime()));
+        noteDto.setCreationTime(note.getCreationTime());
+        noteDto.setUpdateTime(note.getUpdateTime());
         return noteDto;
     }
 }
