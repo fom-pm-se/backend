@@ -120,4 +120,14 @@ public class UserService {
         userRepository.delete(crmUser);
         log.info("User {} deleted successfully", username);
     }
+
+    public CrmUser getCurrentCrmUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("Fetching user {}", username);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Benutzer konnte nicht gefunden werden " + username));
+    }
+
+    public CrmUser getUserById(Long id) {
+        log.info("Fetching user {}", id);
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Benutzer konnte nicht gefunden werden: " + id));}
 }

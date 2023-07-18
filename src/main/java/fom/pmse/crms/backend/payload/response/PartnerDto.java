@@ -1,11 +1,8 @@
 package fom.pmse.crms.backend.payload.response;
 
 import fom.pmse.crms.backend.model.Partner;
-import fom.pmse.crms.backend.model.PartnerType;
-import fom.pmse.crms.backend.util.CrmTimeHelper;
 import lombok.*;
 
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,8 +24,8 @@ public class PartnerDto extends AuditableDto {
         partnerDto.setType(partner.getType().name);
         partnerDto.setCreatedByUsername(partner.getCreatedBy());
         partnerDto.setUpdatedByUsername(partner.getUpdatedByUser());
-        partnerDto.setCreationTime(CrmTimeHelper.format(partner.getCreationTime()));
-        partnerDto.setUpdateTime(CrmTimeHelper.format(partner.getUpdateTime()));
+        partnerDto.setCreationTime(partner.getCreationTime());
+        partnerDto.setUpdateTime(partner.getUpdateTime());
         return partnerDto;
     }
 }

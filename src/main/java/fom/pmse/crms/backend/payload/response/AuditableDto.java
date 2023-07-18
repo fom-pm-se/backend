@@ -2,6 +2,8 @@ package fom.pmse.crms.backend.payload.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Getter
 @Setter
@@ -10,6 +12,6 @@ import lombok.*;
 public abstract class AuditableDto {
     private String createdByUsername;
     private String updatedByUsername;
-    private String creationTime;
-    private String updateTime;
+    private LocalDateTime creationTime;
+    private LocalDateTime updateTime;
 }
